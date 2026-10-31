@@ -58,8 +58,16 @@ export function renderError({
 }
 export function renderCompleted(reportHtml, job) {
   const time = new Date(job.finishedAt).toISOString();
-  return reportHtml.replace(
-    "</header>",
-    `</header><nav class="summary" aria-label="Report actions"><a href="/">Check another release</a> | <a href="/r/${escape(job.id)}.json" download="unmask-report.json">Download report JSON</a><p>Cached analysis: <time datetime="${time}">${time}</time>. Repeated checks reuse this report when available. Reports expire within 24 hours; capacity eviction or restart may remove them.</p></nav>`,
-  );
+  const navigation = `<nav class="summary" aria-label="Report actions"><a href="/">Check another release</a> | <a href="/r/${escape(job.id)}.json" download="unmask-report.json">Download report JSON</a><p>Cached analysis: <time datetime="${time}">${time}</time>. Repeated checks reuse this report when available. Reports expire within 24 hours; capacity eviction or restart may remove them.</p></nav>`;
+  if (/<\/header\s*>/i.test(reportHtml))
+    return reportHtml.replace(
+      /<\/header\s*>/i,
+      (closing) => closing + navigation,
+    );
+  if (/<\/body\s*>/i.test(reportHtml))
+    return reportHtml.replace(
+      /<\/body\s*>/i,
+      (closing) => navigation + closing,
+    );
+  return reportHtml + navigation;
 }

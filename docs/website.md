@@ -7,7 +7,7 @@ This initial slice contains plain ESM JavaScript functions that render the websi
 - `renderHome({value?, error?, retryAfter?})` renders a registry package name and exact version form, associated validation feedback, and an outline of release evidence. URLs, uploads, tags and version ranges are outside the intended input contract.
 - `renderStatus(job)` renders queued, running, incomplete and failed screens. Active screens refresh every three seconds; terminal screens give an explicit next step. The caller supplies a validated report ID, package identity and UTC millisecond timestamps.
 - `renderError({title?, message?})` renders request errors with a route back to the form.
-- `renderCompleted(trustedReportHtml, job)` adds report actions and an analysis timestamp to HTML from a trusted report renderer. The report renderer and generated JSON are pending integration. Never pass raw package HTML to this helper.
+- `renderCompleted(trustedReportHtml, job)` adds report actions and an analysis timestamp to HTML from a trusted report renderer. Actions follow the first closing header tag, or precede the closing body tag when there is no header. Trusted fragments with neither marker receive actions at the end; matching is case-insensitive. The report renderer and generated JSON are pending integration. Never pass raw package HTML to this helper.
 
 The intended routes are `POST /check`, `GET /r/<id>` and `GET /r/<id>.json`. No route handlers are included here. Shared admission and temporary report-retention notices are copy for the planned backend behavior; enforcement belongs to the later server integration.
 
